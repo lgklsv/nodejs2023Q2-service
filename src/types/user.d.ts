@@ -1,4 +1,4 @@
-export class User implements IUser {
+interface IUser {
   id: string; // uuid v4
   login: string;
   password: string;

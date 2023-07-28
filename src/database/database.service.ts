@@ -23,4 +23,11 @@ export class DatabaseService {
     const newUser = JSON.parse(JSON.stringify(user));
     this.users.push(newUser);
   }
+
+  deleteUser(id: string) {
+    const userIdx = this.users.findIndex((user) => user.id === id);
+    if (userIdx === -1) throw new Error('User with this ID does not exist');
+
+    this.users.splice(userIdx, 1);
+  }
 }

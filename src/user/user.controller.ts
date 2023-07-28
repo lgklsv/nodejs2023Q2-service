@@ -10,6 +10,7 @@ import {
   NotFoundException,
   UsePipes,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { UserService } from './user.service';
@@ -48,7 +49,15 @@ export class UserController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    try {
+      return this.userService.remove(id);
+    } catch (err) {
+      throw new NotFoundException(err.message);
+    }
   }
 }

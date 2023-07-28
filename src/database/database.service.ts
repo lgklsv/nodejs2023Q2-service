@@ -2,22 +2,25 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DatabaseService {
-  private users: IUser[] = [
-    // {
-    //   id: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
-    //   login: 'string',
-    //   password: 'string',
-    //   version: 324324,
-    //   createdAt: 2342323,
-    //   updatedAt: 324234234,
-    // },
-  ];
+  private users: IUser[] = [];
 
   findAllUsers() {
-    return this.users;
+    const usersCopy = JSON.parse(JSON.stringify(this.users));
+    usersCopy.forEach((user: IUser) => delete user.password);
+    return usersCopy;
   }
 
   findUserById(id: string) {
-    return this.users.find((user) => user.id === id);
+    const user = this.users.find((user) => user.id === id);
+    if (!user) return user;
+
+    const userCopy = JSON.parse(JSON.stringify(user));
+    delete userCopy.password;
+    return userCopy;
+  }
+
+  createUser(user: IUser) {
+    const newUser = JSON.parse(JSON.stringify(user));
+    this.users.push(newUser);
   }
 }

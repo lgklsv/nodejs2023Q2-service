@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { DatabaseService } from 'src/database/database.service';
@@ -31,11 +31,28 @@ export class UserService {
   }
 
   findOne(id: string) {
-    return this.db.findUserById(id);
+    return this.db.findUserById(id, {
+      password: false,
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = this.db.findUserById(id, {
+      password: true,
+    });
+    if (!user) return user;
+
+    const oldPasswordValid = await bcrypt.compare(
+      updateUserDto.oldPassword,
+      user.password,
+    );
+    if (!oldPasswordValid) {
+      throw new ForbiddenException('Old password is wrong');
+    }
+
+    const hash = await bcrypt.hash(updateUserDto.newPassword, 10);
+
+    return this.db.updateUserPassword(id, hash);
   }
 
   remove(id: string) {

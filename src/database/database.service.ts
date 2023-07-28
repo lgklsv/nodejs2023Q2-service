@@ -10,9 +10,16 @@ export class DatabaseService {
     return usersCopy;
   }
 
-  findUserById(id: string) {
+  findUserById(
+    id: string,
+    options: {
+      password: boolean;
+    },
+  ) {
     const user = this.users.find((user) => user.id === id);
     if (!user) return user;
+
+    if (options.password) return user;
 
     const userCopy = JSON.parse(JSON.stringify(user));
     delete userCopy.password;
@@ -22,6 +29,21 @@ export class DatabaseService {
   createUser(user: IUser) {
     const newUser = JSON.parse(JSON.stringify(user));
     this.users.push(newUser);
+  }
+
+  updateUserPassword(id: string, hash: string) {
+    const userIdx = this.users.findIndex((user) => user.id === id);
+    const user = this.users[userIdx];
+    this.users[userIdx] = {
+      ...user,
+      password: hash,
+      updatedAt: Date.now(),
+      version: user.version + 1,
+    };
+
+    const userCopy = JSON.parse(JSON.stringify(this.users[userIdx]));
+    delete userCopy.password;
+    return userCopy;
   }
 
   deleteUser(id: string) {

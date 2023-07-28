@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   BadRequestException,
@@ -11,6 +10,8 @@ import {
   UsePipes,
   ValidationPipe,
   HttpCode,
+  Put,
+  ForbiddenException,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { UserService } from './user.service';
@@ -43,9 +44,17 @@ export class UserController {
     return user;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UsePipes(new ValidationPipe())
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const updatedUser = await this.userService.update(id, updateUserDto);
+    if (!updatedUser) {
+      throw new NotFoundException('User with this ID does not exist');
+    }
+    return updatedUser;
   }
 
   @Delete(':id')

@@ -5,6 +5,7 @@ export class DatabaseService {
   private users: IUser[] = [];
   private tracks: ITrack[] = [];
   private artists: IArtist[] = [];
+  private albums: IAlbum[] = [];
 
   // Users
   findAllUsers() {

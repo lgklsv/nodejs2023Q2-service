@@ -85,6 +85,8 @@ export class DatabaseService {
     const trackIdx = this.tracks.findIndex((track) => track.id === id);
     if (trackIdx === -1) throw new Error('Track with this ID does not exist');
 
+    this.favs.tracks = this.favs.tracks.filter((track) => track.id !== id);
+
     this.tracks.splice(trackIdx, 1);
   }
 
@@ -115,9 +117,12 @@ export class DatabaseService {
       if (track.artistId === id) track.artistId = null;
     });
 
-    this.albums.forEach((track) => {
-      if (track.artistId === id) track.artistId = null;
+    this.albums.forEach((album) => {
+      if (album.artistId === id) album.artistId = null;
     });
+
+    this.favs.artists = this.favs.artists.filter((artist) => artist.id !== id);
+
     this.artists.splice(artistIdx, 1);
   }
 
@@ -147,6 +152,9 @@ export class DatabaseService {
     this.tracks.forEach((track) => {
       if (track.albumId === id) track.albumId = null;
     });
+
+    this.favs.albums = this.favs.albums.filter((album) => album.id !== id);
+
     this.albums.splice(albumIdx, 1);
   }
 

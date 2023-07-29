@@ -111,4 +111,13 @@ export class DatabaseService {
     });
     this.artists.splice(artistIdx, 1);
   }
+
+  // Albums
+  findAllAlbums() {
+    return this.albums;
+  }
+
+  findAlbumById(id: string) {
+    return this.artists.find((artist) => artist.id === id);
+  }
 }

@@ -6,7 +6,10 @@ import {
   Param,
   Delete,
   Put,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
+import { validate as uuidValidate } from 'uuid';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
 
@@ -26,7 +29,14 @@ export class AlbumController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.albumService.findOne(+id);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const album = this.albumService.findOne(id);
+    if (!album) {
+      throw new NotFoundException('Album with this ID does not exist');
+    }
+    return album;
   }
 
   @Put(':id')

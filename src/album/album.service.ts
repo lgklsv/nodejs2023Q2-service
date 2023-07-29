@@ -11,11 +11,11 @@ export class AlbumService {
   }
 
   findAll() {
-    return `This action returns all album`;
+    return this.db.findAllAlbums();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} album`;
+  findOne(id: string) {
+    return this.db.findAlbumById(id);
   }
 
   update(id: number, updateAlbumDto: UpdateAlbumDto) {

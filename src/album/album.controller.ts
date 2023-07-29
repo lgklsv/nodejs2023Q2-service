@@ -43,9 +43,17 @@ export class AlbumController {
     return album;
   }
 
+  @UsePipes(new ValidationPipe())
   @Put(':id')
   update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
-    return this.albumService.update(+id, updateAlbumDto);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const updatedAlbum = this.albumService.update(id, updateAlbumDto);
+    if (!updatedAlbum) {
+      throw new NotFoundException('Album with this ID does not exist');
+    }
+    return updatedAlbum;
   }
 
   @Delete(':id')

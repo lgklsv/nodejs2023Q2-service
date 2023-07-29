@@ -27,8 +27,18 @@ export class AlbumService {
     return this.db.findAlbumById(id);
   }
 
-  update(id: number, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+  update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const album = this.db.findAlbumById(id);
+    if (!album) return album;
+
+    const updatedAlbum: IAlbum = {
+      ...album,
+      name: updateAlbumDto.name,
+      year: updateAlbumDto.year,
+      artistId: updateAlbumDto.artistId ? updateAlbumDto.artistId : null,
+    };
+
+    return this.db.updateAlbum(id, updatedAlbum);
   }
 
   remove(id: string) {

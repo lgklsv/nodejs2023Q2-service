@@ -129,6 +129,12 @@ export class DatabaseService {
     this.albums.push(album);
   }
 
+  updateAlbum(id: string, album: IAlbum) {
+    const albumIdx = this.albums.findIndex((album) => album.id === id);
+    this.albums[albumIdx] = album;
+    return album;
+  }
+
   deleteAlbum(id: string) {
     const albumIdx = this.albums.findIndex((album) => album.id === id);
     if (albumIdx === -1) throw new Error('Album with this ID does not exist');

@@ -8,6 +8,8 @@ import {
   Put,
   BadRequestException,
   NotFoundException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { AlbumService } from './album.service';
@@ -17,6 +19,7 @@ import { CreateAlbumDto, UpdateAlbumDto } from './dto';
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
+  @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumService.create(createAlbumDto);

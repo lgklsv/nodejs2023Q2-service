@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+
 import { DatabaseService } from 'src/database/database.service';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
 
@@ -7,7 +9,14 @@ export class AlbumService {
   constructor(private db: DatabaseService) {}
 
   create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+    const album: IAlbum = {
+      id: uuidv4(),
+      name: createAlbumDto.name,
+      year: createAlbumDto.year,
+      artistId: createAlbumDto.artistId ? createAlbumDto.artistId : null,
+    };
+    this.db.createAlbum(album);
+    return album;
   }
 
   findAll() {

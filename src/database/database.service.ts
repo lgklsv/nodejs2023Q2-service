@@ -120,4 +120,8 @@ export class DatabaseService {
   findAlbumById(id: string) {
     return this.artists.find((artist) => artist.id === id);
   }
+
+  createAlbum(album: IAlbum) {
+    this.albums.push(album);
+  }
 }

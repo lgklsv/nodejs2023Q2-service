@@ -154,4 +154,16 @@ export class DatabaseService {
   findAllFavs() {
     return this.favs;
   }
+
+  addTrackToFavs(track: ITrack) {
+    return this.favs.tracks.push(track);
+  }
+
+  addAlbumToFavs(album: IAlbum) {
+    return this.favs.albums.push(album);
+  }
+
+  addArtistToFavs(artist: IArtist) {
+    return this.favs.artists.push(artist);
+  }
 }

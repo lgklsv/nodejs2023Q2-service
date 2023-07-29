@@ -6,6 +6,11 @@ export class DatabaseService {
   private tracks: ITrack[] = [];
   private artists: IArtist[] = [];
   private albums: IAlbum[] = [];
+  private favs: IFavorites = {
+    artists: [],
+    albums: [],
+    tracks: [],
+  };
 
   // Users
   findAllUsers() {
@@ -143,5 +148,10 @@ export class DatabaseService {
       if (track.albumId === id) track.albumId = null;
     });
     this.albums.splice(albumIdx, 1);
+  }
+
+  // Favs
+  findAllFavs() {
+    return this.favs;
   }
 }

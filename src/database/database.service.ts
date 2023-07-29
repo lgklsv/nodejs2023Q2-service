@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class DatabaseService {
   private users: IUser[] = [];
   private tracks: ITrack[] = [];
+  private artists: IArtist[] = [];
 
   // Users
   findAllUsers() {
@@ -79,5 +80,18 @@ export class DatabaseService {
     if (trackIdx === -1) throw new Error('Track with this ID does not exist');
 
     this.tracks.splice(trackIdx, 1);
+  }
+
+  // Artists
+  findAllArtists() {
+    return this.artists;
+  }
+
+  findArtistById(id: string) {
+    return this.artists.find((artist) => artist.id === id);
+  }
+
+  createArtist(artist: IArtist) {
+    this.artists.push(artist);
   }
 }

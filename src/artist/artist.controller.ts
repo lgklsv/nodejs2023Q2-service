@@ -6,7 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
+  NotFoundException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+import { validate as uuidValidate } from 'uuid';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto, UpdateArtistDto } from './dto';
 
@@ -14,6 +19,7 @@ import { CreateArtistDto, UpdateArtistDto } from './dto';
 export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
+  @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistService.create(createArtistDto);
@@ -26,7 +32,14 @@ export class ArtistController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.artistService.findOne(+id);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const artist = this.artistService.findOne(id);
+    if (!artist) {
+      throw new NotFoundException('Artist with this ID does not exist');
+    }
+    return artist;
   }
 
   @Patch(':id')

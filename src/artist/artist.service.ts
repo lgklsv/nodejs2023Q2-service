@@ -30,7 +30,7 @@ export class ArtistService {
     return `This action updates a #${id} artist`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} artist`;
+  remove(id: string) {
+    return this.db.deleteArtist(id);
   }
 }

@@ -94,4 +94,14 @@ export class DatabaseService {
   createArtist(artist: IArtist) {
     this.artists.push(artist);
   }
+
+  deleteArtist(id: string) {
+    const artistIdx = this.artists.findIndex((artist) => artist.id === id);
+    if (artistIdx === -1) throw new Error('Artist with this ID does not exist');
+
+    this.tracks.forEach((track) => {
+      if (track.artistId === id) track.artistId = null;
+    });
+    this.artists.splice(artistIdx, 1);
+  }
 }

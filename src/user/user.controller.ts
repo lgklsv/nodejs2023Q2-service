@@ -15,7 +15,13 @@ import {
 import { validate as uuidValidate } from 'uuid';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  OmitType,
+} from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 
 @ApiTags('user')
@@ -26,8 +32,15 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @Post()
   @ApiOperation({ summary: 'Create(register) user' })
-  @ApiResponse({ status: 201, description: 'Created', type: User })
-  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+    type: OmitType(User, ['password'] as const),
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Body does not contain required fields',
+  })
   @ApiBody({
     type: CreateUserDto,
   })
@@ -37,12 +50,24 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: OmitType(User, ['password'] as const),
+  })
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: OmitType(User, ['password'] as const),
+  })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({ status: 404, description: 'User with this id does not exist' })
   findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
@@ -57,6 +82,14 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @Put(':id')
   @ApiOperation({ summary: 'Update user password' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: OmitType(User, ['password'] as const),
+  })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({ status: 403, description: 'Old password does not match' })
+  @ApiResponse({ status: 404, description: 'User with this id does not exist' })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
@@ -71,7 +104,9 @@ export class UserController {
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete user' })
-  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiResponse({ status: 204, description: 'User deleted successfully' })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({ status: 404, description: 'User with this id does not exist' })
   remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');

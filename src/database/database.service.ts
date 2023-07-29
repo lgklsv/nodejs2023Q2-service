@@ -67,4 +67,11 @@ export class DatabaseService {
   createTrack(track: ITrack) {
     this.tracks.push(track);
   }
+
+  deleteTrack(id: string) {
+    const trackIdx = this.tracks.findIndex((track) => track.id === id);
+    if (trackIdx === -1) throw new Error('Track with this ID does not exist');
+
+    this.tracks.splice(trackIdx, 1);
+  }
 }

@@ -33,7 +33,7 @@ export class TrackService {
     return `This action updates a #${id} track`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  remove(id: string) {
+    return this.db.deleteTrack(id);
   }
 }

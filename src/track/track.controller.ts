@@ -24,7 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { Track } from './entities/track.entity';
 
-@ApiTags('track')
+@ApiTags('Tracks')
 @Controller('track')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}

@@ -1,7 +1,28 @@
+import { v4 as uuidv4 } from 'uuid';
+import { ApiProperty } from '@nestjs/swagger';
+
 export class Track implements ITrack {
-  id: string; // uuid v4
+  @ApiProperty({ example: uuidv4(), description: 'Valid uuid v4' })
+  id: string;
+
+  @ApiProperty({ example: 'TIL FURTHER NOTICE' })
   name: string;
-  artistId: string | null; // refers to Artist
-  albumId: string | null; // refers to Album
-  duration: number; // integer number
+
+  @ApiProperty({
+    example: uuidv4(),
+    description: 'Valid uuid v4 that refers to Artist',
+  })
+  artistId: string | null;
+
+  @ApiProperty({
+    example: uuidv4(),
+    description: 'Valid uuid v4 that refers to Album',
+  })
+  albumId: string | null;
+
+  @ApiProperty({
+    example: 331,
+    description: 'Integer number',
+  })
+  duration: number;
 }

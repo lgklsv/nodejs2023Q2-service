@@ -15,23 +15,62 @@ import {
 import { validate as uuidValidate } from 'uuid';
 import { TrackService } from './track.service';
 import { CreateTrackDto, UpdateTrackDto } from './dto';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  PartialType,
+} from '@nestjs/swagger';
+import { Track } from './entities/track.entity';
 
+@ApiTags('track')
 @Controller('track')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @UsePipes(new ValidationPipe())
   @Post()
+  @ApiOperation({ summary: 'Create track' })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+    type: Track,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Body does not contain required fields',
+  })
+  @ApiBody({
+    type: CreateTrackDto,
+  })
   create(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.create(createTrackDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all tracks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: [Track],
+  })
   findAll() {
     return this.trackService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get track by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: Track,
+  })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({
+    status: 404,
+    description: 'Track with this id does not exist',
+  })
   findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
@@ -43,8 +82,22 @@ export class TrackController {
     return track;
   }
 
-  @Put(':id')
   @UsePipes(new ValidationPipe())
+  @Put(':id')
+  @ApiOperation({ summary: 'Update track' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: Track,
+  })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({
+    status: 404,
+    description: 'Track with this id does not exist',
+  })
+  @ApiBody({
+    type: PartialType(CreateTrackDto),
+  })
   update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
@@ -58,6 +111,13 @@ export class TrackController {
 
   @Delete(':id')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Delete track' })
+  @ApiResponse({ status: 204, description: 'Track deleted successfully' })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({
+    status: 404,
+    description: 'Track with this id does not exist',
+  })
   remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');

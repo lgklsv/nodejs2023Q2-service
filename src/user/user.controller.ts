@@ -53,7 +53,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: OmitType(User, ['password'] as const),
+    type: [OmitType(User, ['password'] as const)],
   })
   findAll() {
     return this.userService.findAll();

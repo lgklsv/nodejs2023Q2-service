@@ -26,8 +26,17 @@ export class ArtistService {
     return this.db.findArtistById(id);
   }
 
-  update(id: number, updateArtistDto: UpdateArtistDto) {
-    return `This action updates a #${id} artist`;
+  update(id: string, updateArtistDto: UpdateArtistDto) {
+    const artist = this.db.findArtistById(id);
+    if (!artist) return artist;
+
+    const updatedArtist: IArtist = {
+      ...artist,
+      name: updateArtistDto.name,
+      grammy: updateArtistDto.grammy,
+    };
+
+    return this.db.updateArtist(id, updatedArtist);
   }
 
   remove(id: string) {

@@ -11,6 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { ArtistService } from './artist.service';
@@ -43,9 +44,17 @@ export class ArtistController {
     return artist;
   }
 
-  @Patch(':id')
+  @UsePipes(new ValidationPipe())
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
-    return this.artistService.update(+id, updateArtistDto);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const updatedArtist = this.artistService.update(id, updateArtistDto);
+    if (!updatedArtist) {
+      throw new NotFoundException('Artist with this ID does not exist');
+    }
+    return updatedArtist;
   }
 
   @Delete(':id')

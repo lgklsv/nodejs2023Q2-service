@@ -95,6 +95,12 @@ export class DatabaseService {
     this.artists.push(artist);
   }
 
+  updateArtist(id: string, artist: IArtist) {
+    const artistIdx = this.artists.findIndex((artist) => artist.id === id);
+    this.artists[artistIdx] = artist;
+    return artist;
+  }
+
   deleteArtist(id: string) {
     const artistIdx = this.artists.findIndex((artist) => artist.id === id);
     if (artistIdx === -1) throw new Error('Artist with this ID does not exist');

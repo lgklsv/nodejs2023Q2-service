@@ -68,6 +68,12 @@ export class DatabaseService {
     this.tracks.push(track);
   }
 
+  updateTrack(id: string, track: ITrack) {
+    const trackIdx = this.tracks.findIndex((track) => track.id === id);
+    this.tracks[trackIdx] = track;
+    return track;
+  }
+
   deleteTrack(id: string) {
     const trackIdx = this.tracks.findIndex((track) => track.id === id);
     if (trackIdx === -1) throw new Error('Track with this ID does not exist');

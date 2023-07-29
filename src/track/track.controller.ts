@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   BadRequestException,
@@ -11,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { TrackService } from './track.service';
@@ -44,9 +44,17 @@ export class TrackController {
     return track;
   }
 
-  @Patch(':id')
+  @Put(':id')
+  @UsePipes(new ValidationPipe())
   update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
-    return this.trackService.update(+id, updateTrackDto);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const updatedTrack = this.trackService.update(id, updateTrackDto);
+    if (!updatedTrack) {
+      throw new NotFoundException('Track with this ID does not exist');
+    }
+    return updatedTrack;
   }
 
   @Delete(':id')

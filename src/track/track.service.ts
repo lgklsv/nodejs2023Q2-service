@@ -29,8 +29,19 @@ export class TrackService {
     return this.db.findTrackById(id);
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+  update(id: string, updateTrackDto: UpdateTrackDto) {
+    const track = this.db.findTrackById(id);
+    if (!track) return track;
+
+    const updatedTrack: ITrack = {
+      ...track,
+      name: updateTrackDto.name,
+      artistId: updateTrackDto.artistId ? updateTrackDto.artistId : null,
+      albumId: updateTrackDto.albumId ? updateTrackDto.albumId : null,
+      duration: updateTrackDto.duration,
+    };
+
+    return this.db.updateTrack(id, updatedTrack);
   }
 
   remove(id: string) {

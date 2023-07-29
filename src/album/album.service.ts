@@ -31,7 +31,7 @@ export class AlbumService {
     return `This action updates a #${id} album`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} album`;
+  remove(id: string) {
+    return this.db.deleteAlbum(id);
   }
 }

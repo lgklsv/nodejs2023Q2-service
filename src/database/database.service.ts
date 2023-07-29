@@ -109,6 +109,10 @@ export class DatabaseService {
     this.tracks.forEach((track) => {
       if (track.artistId === id) track.artistId = null;
     });
+
+    this.albums.forEach((track) => {
+      if (track.artistId === id) track.artistId = null;
+    });
     this.artists.splice(artistIdx, 1);
   }
 
@@ -118,10 +122,20 @@ export class DatabaseService {
   }
 
   findAlbumById(id: string) {
-    return this.artists.find((artist) => artist.id === id);
+    return this.albums.find((albums) => albums.id === id);
   }
 
   createAlbum(album: IAlbum) {
     this.albums.push(album);
+  }
+
+  deleteAlbum(id: string) {
+    const albumIdx = this.albums.findIndex((album) => album.id === id);
+    if (albumIdx === -1) throw new Error('Album with this ID does not exist');
+
+    this.tracks.forEach((track) => {
+      if (track.albumId === id) track.albumId = null;
+    });
+    this.albums.splice(albumIdx, 1);
   }
 }

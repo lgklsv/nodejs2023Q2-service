@@ -6,7 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
+import { validate as uuidValidate } from 'uuid';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -27,7 +30,14 @@ export class TrackController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.trackService.findOne(+id);
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+    const track = this.trackService.findOne(id);
+    if (!track) {
+      throw new NotFoundException('Track with this ID does not exist');
+    }
+    return track;
   }
 
   @Patch(':id')

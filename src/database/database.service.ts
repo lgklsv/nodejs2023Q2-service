@@ -3,7 +3,9 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class DatabaseService {
   private users: IUser[] = [];
+  private tracks: ITrack[] = [];
 
+  // Users
   findAllUsers() {
     const usersCopy = JSON.parse(JSON.stringify(this.users));
     usersCopy.forEach((user: IUser) => delete user.password);
@@ -51,5 +53,14 @@ export class DatabaseService {
     if (userIdx === -1) throw new Error('User with this ID does not exist');
 
     this.users.splice(userIdx, 1);
+  }
+
+  // Tracks
+  findAllTracks() {
+    return this.tracks;
+  }
+
+  findTrackById(id: string) {
+    return this.users.find((user) => user.id === id);
   }
 }

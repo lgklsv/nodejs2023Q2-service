@@ -12,11 +12,11 @@ export class TrackService {
   }
 
   findAll() {
-    return `This action returns all track`;
+    return this.db.findAllTracks();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} track`;
+  findOne(id: string) {
+    return this.db.findTrackById(id);
   }
 
   update(id: number, updateTrackDto: UpdateTrackDto) {

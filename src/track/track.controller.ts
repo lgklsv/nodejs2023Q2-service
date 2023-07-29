@@ -14,8 +14,7 @@ import {
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { TrackService } from './track.service';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+import { CreateTrackDto, UpdateTrackDto } from './dto';
 
 @Controller('track')
 export class TrackController {

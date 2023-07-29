@@ -11,7 +11,6 @@ import {
   ValidationPipe,
   HttpCode,
   Put,
-  ForbiddenException,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { UserService } from './user.service';

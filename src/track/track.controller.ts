@@ -8,6 +8,8 @@ import {
   Delete,
   BadRequestException,
   NotFoundException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { TrackService } from './track.service';
@@ -18,6 +20,7 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
+  @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.create(createTrackDto);

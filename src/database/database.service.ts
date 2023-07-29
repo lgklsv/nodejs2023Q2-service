@@ -61,6 +61,10 @@ export class DatabaseService {
   }
 
   findTrackById(id: string) {
-    return this.users.find((user) => user.id === id);
+    return this.tracks.find((track) => track.id === id);
+  }
+
+  createTrack(track: ITrack) {
+    this.tracks.push(track);
   }
 }

@@ -159,11 +159,38 @@ export class DatabaseService {
     return this.favs.tracks.push(track);
   }
 
+  deleteTrackFromFavs(id: string) {
+    const trackIdx = this.favs.tracks.findIndex((track) => track.id === id);
+    if (trackIdx === -1) return undefined;
+    const track = this.favs.tracks[trackIdx];
+
+    this.favs.tracks.splice(trackIdx, 1);
+    return track;
+  }
+
   addAlbumToFavs(album: IAlbum) {
     return this.favs.albums.push(album);
   }
 
+  deleteAlbumFromFavs(id: string) {
+    const albumIdx = this.favs.albums.findIndex((album) => album.id === id);
+    if (albumIdx === -1) return undefined;
+    const album = this.favs.albums[albumIdx];
+
+    this.favs.albums.splice(albumIdx, 1);
+    return album;
+  }
+
   addArtistToFavs(artist: IArtist) {
     return this.favs.artists.push(artist);
+  }
+
+  deleteArtistFromFavs(id: string) {
+    const artistIdx = this.favs.artists.findIndex((artist) => artist.id === id);
+    if (artistIdx === -1) return undefined;
+    const artist = this.favs.artists[artistIdx];
+
+    this.favs.artists.splice(artistIdx, 1);
+    return artist;
   }
 }

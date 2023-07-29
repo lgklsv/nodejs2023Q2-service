@@ -5,7 +5,9 @@ import {
   Param,
   BadRequestException,
   UnprocessableEntityException,
-  // Delete,
+  Delete,
+  HttpCode,
+  NotFoundException,
 } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 
@@ -37,6 +39,22 @@ export class FavsController {
     return track;
   }
 
+  @Delete('track/:id')
+  @HttpCode(204)
+  removeTrack(@Param('id') id: string) {
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+
+    const track = this.favsService.removeTrack(id);
+
+    if (!track) {
+      throw new NotFoundException('Track with this ID does not exist in favs');
+    }
+
+    return;
+  }
+
   @Post('album/:id')
   createAlbum(@Param('id') id: string) {
     if (!uuidValidate(id)) {
@@ -52,6 +70,22 @@ export class FavsController {
     }
 
     return album;
+  }
+
+  @Delete('album/:id')
+  @HttpCode(204)
+  removeAlbum(@Param('id') id: string) {
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+
+    const album = this.favsService.removeAlbum(id);
+
+    if (!album) {
+      throw new NotFoundException('Album with this ID does not exist in favs');
+    }
+
+    return;
   }
 
   @Post('artist/:id')
@@ -71,8 +105,19 @@ export class FavsController {
     return artist;
   }
 
-  // @Delete('track/:id')
-  // remove(@Param('id') id: string) {
-  //   return this.favsService.remove(id);
-  // }
+  @Delete('artist/:id')
+  @HttpCode(204)
+  removeArtist(@Param('id') id: string) {
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('ID should be valid UUID');
+    }
+
+    const artist = this.favsService.removeArtist(id);
+
+    if (!artist) {
+      throw new NotFoundException('Artist with this ID does not exist in favs');
+    }
+
+    return;
+  }
 }

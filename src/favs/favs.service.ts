@@ -17,12 +17,20 @@ export class FavsService {
     return track;
   }
 
+  removeTrack(id: string) {
+    return this.db.deleteTrackFromFavs(id);
+  }
+
   createAlbum(id: string) {
     const album = this.db.findAlbumById(id);
     if (!album) return album;
 
     this.db.addAlbumToFavs(album);
     return album;
+  }
+
+  removeAlbum(id: string) {
+    return this.db.deleteAlbumFromFavs(id);
   }
 
   createArtist(id: string) {
@@ -33,7 +41,7 @@ export class FavsService {
     return artist;
   }
 
-  // remove(id: string) {
-  //   return `This action removes a #${id} fav`;
-  // }
+  removeArtist(id: string) {
+    return this.db.deleteArtistFromFavs(id);
+  }
 }

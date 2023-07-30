@@ -15,23 +15,62 @@ import {
 import { validate as uuidValidate } from 'uuid';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  PartialType,
+} from '@nestjs/swagger';
+import { Album } from './entities/album.entity';
 
+@ApiTags('Albums')
 @Controller('album')
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
   @UsePipes(new ValidationPipe())
   @Post()
+  @ApiOperation({ summary: 'Create album' })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+    type: Album,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Body does not contain required fields',
+  })
+  @ApiBody({
+    type: CreateAlbumDto,
+  })
   create(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumService.create(createAlbumDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all albums' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: [Album],
+  })
   findAll() {
     return this.albumService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get album by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: Album,
+  })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({
+    status: 404,
+    description: 'Album with this id does not exist',
+  })
   findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
@@ -45,6 +84,20 @@ export class AlbumController {
 
   @UsePipes(new ValidationPipe())
   @Put(':id')
+  @ApiOperation({ summary: 'Update album' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: Album,
+  })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({
+    status: 404,
+    description: 'Album with this id does not exist',
+  })
+  @ApiBody({
+    type: PartialType(CreateAlbumDto),
+  })
   update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
@@ -58,6 +111,13 @@ export class AlbumController {
 
   @Delete(':id')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Delete album' })
+  @ApiResponse({ status: 204, description: 'Album deleted successfully' })
+  @ApiResponse({ status: 400, description: 'Id is not valid' })
+  @ApiResponse({
+    status: 404,
+    description: 'Album with this id does not exist',
+  })
   remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');

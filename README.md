@@ -1,5 +1,9 @@
 # Home Library Service
 
+## Screenshot
+
+![Alt text](image.png)
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
@@ -8,7 +12,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/lgklsv/nodejs2023Q2-service.git
 ```
 
 ## Installing NPM modules
@@ -19,13 +23,19 @@ npm install
 
 ## Running application
 
+#### Default mode
 ```
 npm start
+```
+#### Dev mode
+```
+npm start:dev
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+There is also my generated yaml file in ```/doc``` folder ```my-swagger-api.yaml```. You can open it using yaml option on https://editor.swagger.io/.
 
 ## Testing
 

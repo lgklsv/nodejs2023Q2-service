@@ -1,0 +1,784 @@
+openapi: 3.0.0
+paths:
+  /user:
+    post:
+      operationId: UserController_create
+      summary: Create(register) user
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmitTypeClass'
+        '400':
+          description: Body does not contain required fields
+      tags:
+        - Users
+    get:
+      operationId: UserController_findAll
+      summary: Get all users
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OmitTypeClass'
+      tags:
+        - Users
+  /user/{id}:
+    get:
+      operationId: UserController_findOne
+      summary: Get user by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmitTypeClass'
+        '400':
+          description: Id is not valid
+        '404':
+          description: User with this id does not exist
+      tags:
+        - Users
+    put:
+      operationId: UserController_update
+      summary: Update user password
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmitTypeClass'
+        '400':
+          description: Id is not valid
+        '403':
+          description: Old password does not match
+        '404':
+          description: User with this id does not exist
+      tags:
+        - Users
+    delete:
+      operationId: UserController_remove
+      summary: Delete user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: User with this id does not exist
+      tags:
+        - Users
+  /track:
+    post:
+      operationId: TrackController_create
+      summary: Create track
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTrackDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+        '400':
+          description: Body does not contain required fields
+      tags:
+        - Tracks
+    get:
+      operationId: TrackController_findAll
+      summary: Get all tracks
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+      tags:
+        - Tracks
+  /track/{id}:
+    get:
+      operationId: TrackController_findOne
+      summary: Get track by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+        '400':
+          description: Id is not valid
+        '404':
+          description: Track with this id does not exist
+      tags:
+        - Tracks
+    put:
+      operationId: TrackController_update
+      summary: Update track
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartialTypeClass'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+        '400':
+          description: Id is not valid
+        '404':
+          description: Track with this id does not exist
+      tags:
+        - Tracks
+    delete:
+      operationId: TrackController_remove
+      summary: Delete track
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Track deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: Track with this id does not exist
+      tags:
+        - Tracks
+  /artist:
+    post:
+      operationId: ArtistController_create
+      summary: Create artist
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateArtistDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        '400':
+          description: Body does not contain required fields
+      tags:
+        - Artists
+    get:
+      operationId: ArtistController_findAll
+      summary: Get all artists
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Artist'
+      tags:
+        - Artists
+  /artist/{id}:
+    get:
+      operationId: ArtistController_findOne
+      summary: Get artist by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        '400':
+          description: Id is not valid
+        '404':
+          description: Artist with this id does not exist
+      tags:
+        - Artists
+    put:
+      operationId: ArtistController_update
+      summary: Update artist
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartialTypeClass'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        '400':
+          description: Id is not valid
+        '404':
+          description: Artist with this id does not exist
+      tags:
+        - Artists
+    delete:
+      operationId: ArtistController_remove
+      summary: Delete artist
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Artist deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: Artist with this id does not exist
+      tags:
+        - Artists
+  /album:
+    post:
+      operationId: AlbumController_create
+      summary: Create album
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlbumDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+        '400':
+          description: Body does not contain required fields
+      tags:
+        - Albums
+    get:
+      operationId: AlbumController_findAll
+      summary: Get all albums
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Album'
+      tags:
+        - Albums
+  /album/{id}:
+    get:
+      operationId: AlbumController_findOne
+      summary: Get album by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+        '400':
+          description: Id is not valid
+        '404':
+          description: Album with this id does not exist
+      tags:
+        - Albums
+    put:
+      operationId: AlbumController_update
+      summary: Update album
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartialTypeClass'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+        '400':
+          description: Id is not valid
+        '404':
+          description: Album with this id does not exist
+      tags:
+        - Albums
+    delete:
+      operationId: AlbumController_remove
+      summary: Delete album
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Album deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: Album with this id does not exist
+      tags:
+        - Albums
+  /favs:
+    get:
+      operationId: FavsController_findAll
+      summary: Get all favorites
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorites'
+      tags:
+        - Favorites
+  /favs/track/{id}:
+    post:
+      operationId: FavsController_createTrack
+      summary: Add track to favorites
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+        '400':
+          description: Id is not valid
+        '422':
+          description: Track with this id does not exist
+      tags:
+        - Favorites
+    delete:
+      operationId: FavsController_removeTrack
+      summary: Delete track from favorites
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Track deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: Track with this id does not exist in favorites
+      tags:
+        - Favorites
+  /favs/album/{id}:
+    post:
+      operationId: FavsController_createAlbum
+      summary: Add album to favorites
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+        '400':
+          description: Id is not valid
+        '422':
+          description: Album with this id does not exist
+      tags:
+        - Favorites
+    delete:
+      operationId: FavsController_removeAlbum
+      summary: Delete album from favorites
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Album deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: Album with this id does not exist in favorites
+      tags:
+        - Favorites
+  /favs/artist/{id}:
+    post:
+      operationId: FavsController_createArtist
+      summary: Add artist to favorites
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        '400':
+          description: Id is not valid
+        '422':
+          description: Artist with this id does not exist
+      tags:
+        - Favorites
+    delete:
+      operationId: FavsController_removeArtist
+      summary: Delete artist from favorites
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Artist deleted successfully
+        '400':
+          description: Id is not valid
+        '404':
+          description: Artist with this id does not exist in favorites
+      tags:
+        - Favorites
+info:
+  title: Home Library Service
+  description: Home music library service
+  version: 1.0.0
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    CreateUserDto:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      required:
+        - login
+        - password
+    OmitTypeClass:
+      type: object
+      properties:
+        id:
+          type: string
+          example: dc771a3c-dbe1-4842-82ea-ff153a4dd7bd
+          description: Valid uuid v4
+        login:
+          type: string
+        version:
+          type: number
+          example: 1
+          description: Integer number, increments on update
+        createdAt:
+          type: number
+          example: 1690828887001
+          description: Timestamp of creation
+        updatedAt:
+          type: number
+          example: 1690828887001
+          description: Timestamp of last update
+      required:
+        - id
+        - login
+        - version
+        - createdAt
+        - updatedAt
+    UpdateUserDto:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - oldPassword
+        - newPassword
+    CreateTrackDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: TIL FURTHER NOTICE
+        artistId:
+          type: string
+          example: 675938ae-9182-4f95-be7a-bd1318b19894
+          description: Valid uuid v4 that refers to Artist
+        albumId:
+          type: string
+          example: a4e539f6-fd2c-45f7-b38b-1c1eeb9c47a6
+          description: Valid uuid v4 that refers to Album
+        duration:
+          type: number
+          example: 331
+          description: Integer number
+      required:
+        - name
+        - artistId
+        - albumId
+        - duration
+    Track:
+      type: object
+      properties:
+        id:
+          type: string
+          example: e920b17f-7766-4be2-a982-caab7016c600
+          description: Valid uuid v4
+        name:
+          type: string
+          example: TIL FURTHER NOTICE
+        artistId:
+          type: string
+          example: 6465f97a-a850-415b-a8a5-499a35d31708
+          description: Valid uuid v4 that refers to Artist
+        albumId:
+          type: string
+          example: a1ff1d18-c51b-4d77-9d5d-516ad9c4bd76
+          description: Valid uuid v4 that refers to Album
+        duration:
+          type: number
+          example: 331
+          description: Integer number
+      required:
+        - id
+        - name
+        - artistId
+        - albumId
+        - duration
+    PartialTypeClass:
+      type: object
+      properties:
+        name:
+          type: string
+          example: UTOPIA
+        year:
+          type: number
+          example: 2023
+        artistId:
+          type: string
+          example: 796fe488-80de-4bb8-b963-f7209f17cb24
+          description: Valid uuid v4 that  refers to Artist
+    CreateArtistDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Travis Scott
+        grammy:
+          type: boolean
+          example: false
+      required:
+        - name
+        - grammy
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+          example: d514f5fa-5e91-42d6-a843-dfb372a011de
+          description: Valid uuid v4
+        name:
+          type: string
+          example: Travis Scott
+        grammy:
+          type: boolean
+          example: false
+      required:
+        - id
+        - name
+        - grammy
+    CreateAlbumDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: UTOPIA
+        year:
+          type: number
+          example: 2023
+        artistId:
+          type: string
+          example: 796fe488-80de-4bb8-b963-f7209f17cb24
+          description: Valid uuid v4 that  refers to Artist
+      required:
+        - name
+        - year
+        - artistId
+    Album:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 4d57ec86-4656-42a0-b591-1d757fadb1b2
+          description: Valid uuid v4
+        name:
+          type: string
+          example: UTOPIA
+        year:
+          type: number
+          example: 2023
+        artistId:
+          type: string
+          example: 0dd83fa0-ce77-4fa5-8c81-af5fdb28821f
+          description: Valid uuid v4 that  refers to Artist
+      required:
+        - id
+        - name
+        - year
+        - artistId
+    Favorites:
+      type: object
+      properties:
+        tracks:
+          example:
+            type: array
+            items:
+              $ref: '#/components/schemas/Track'
+          type: array
+          items:
+            type: string
+        albums:
+          example:
+            type: array
+            items:
+              $ref: '#/components/schemas/Album'
+          type: array
+          items:
+            type: string
+        artists:
+          example:
+            type: array
+            items:
+              $ref: '#/components/schemas/Artist'
+          type: array
+          items:
+            type: string
+      required:
+        - tracks
+        - albums
+        - artists

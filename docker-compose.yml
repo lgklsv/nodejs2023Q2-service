@@ -1,11 +1,26 @@
 version: '3.5'
 
 services:
-  db:
-    container_name: db
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    command: npm run start:dev
     ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=admin
-    image: postgres:15-alpine
+      - 4000:4000
+  # db:
+  #   container_name: db
+  #   ports:
+  #     - '5432:5432'
+  #   environment:
+  #     - POSTGRES_PASSWORD=root
+  #     - POSTGRES_USER=admin
+  #   image: postgres:15-alpine

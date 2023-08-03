@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 import { DatabaseService } from 'src/database/database.service';
 import { CreateUserDto, UpdateUserDto } from './dto';

@@ -10,7 +10,10 @@ export class UserService {
   constructor(private db: DatabaseService) {}
 
   async create(createUserDto: CreateUserDto) {
-    const hash = await bcrypt.hash(createUserDto.password, 10);
+    const hash = await bcrypt.hash(
+      createUserDto.password,
+      +process.env.CRYPT_SALT,
+    );
 
     const user: IUser = {
       id: uuidv4(),
@@ -50,7 +53,10 @@ export class UserService {
       throw new ForbiddenException('Old password is wrong');
     }
 
-    const hash = await bcrypt.hash(updateUserDto.newPassword, 10);
+    const hash = await bcrypt.hash(
+      updateUserDto.newPassword,
+      +process.env.CRYPT_SALT,
+    );
 
     return this.db.updateUserPassword(id, hash);
   }

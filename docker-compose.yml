@@ -1,5 +1,9 @@
 version: '3.5'
 
+networks:
+  hls-network:
+    driver: bridge
+
 services:
   api:
     container_name: home-library-service
@@ -14,23 +18,27 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-     # Run a command against the development stage of the image
+      # Run a command against the development stage of the image
     command: npm run start:dev
     ports:
       - ${PORT}:${PORT}
+    networks:
+      - hls-network
     depends_on:
       - postgres
   postgres:
     image: postgres:15-alpine
     restart: always
+    volumes:
+      - hls-postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - ${PORT_DB}:${PORT_DB}
-    volumes:
-      - hls-postgres:/var/lib/postgresql/data
+    networks:
+      - hls-network
 
 volumes:
   hls-postgres:

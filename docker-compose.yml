@@ -18,14 +18,14 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-      # Run a command against the development stage of the image
-    command: npm run start:dev
     ports:
       - ${PORT}:${PORT}
     networks:
       - hls-network
     depends_on:
       - postgres
+    stdin_open: true
+    tty: true
   postgres:
     image: postgres:15-alpine
     restart: always

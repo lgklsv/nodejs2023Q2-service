@@ -1,4 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { INestApplication, Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class DatabaseService2 extends PrismaClient {
+  async onModuleInit() {
+    await this.$connect();
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
+
+  async beforeApplicationShutdown(app: INestApplication) {
+    await app.close();
+  }
+}
 
 @Injectable()
 export class DatabaseService {

@@ -15,33 +15,41 @@ export class UserService {
       +process.env.CRYPT_SALT,
     );
 
-    const user: IUser = {
-      id: uuidv4(),
-      login: createUserDto.login,
-      password: hash,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    this.db.createUser(user);
+    const user = await this.db.user.create({
+      data: {
+        id: uuidv4(),
+        login: createUserDto.login,
+        password: hash,
+        version: 1,
+      },
+    });
 
-    delete user.password;
+    console.log(user);
+    return user;
+
+    // delete user.password;
+  }
+
+  async findAll() {
+    return await this.db.user.findMany();
+  }
+
+  async findOne(id: string) {
+    const user = await this.db.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    console.log(user);
     return user;
   }
 
-  findAll() {
-    return this.db.findAllUsers();
-  }
-
-  findOne(id: string) {
-    return this.db.findUserById(id, {
-      password: false,
-    });
-  }
-
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.db.findUserById(id, {
-      password: true,
+    const user = await this.db.user.findUnique({
+      where: {
+        id,
+      },
     });
     if (!user) return user;
 
@@ -58,10 +66,21 @@ export class UserService {
       +process.env.CRYPT_SALT,
     );
 
-    return this.db.updateUserPassword(id, hash);
+    return this.db.user.update({
+      where: {
+        id,
+      },
+      data: {
+        password: hash,
+      },
+    });
   }
 
   remove(id: string) {
-    return this.db.deleteUser(id);
+    return this.db.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

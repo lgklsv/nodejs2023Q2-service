@@ -44,8 +44,8 @@ export class UserController {
   @ApiBody({
     type: CreateUserDto,
   })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.create(createUserDto);
   }
 
   @Get()
@@ -55,8 +55,8 @@ export class UserController {
     description: 'Success',
     type: [OmitType(User, ['password'] as const)],
   })
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    return await this.userService.findAll();
   }
 
   @Get(':id')
@@ -68,11 +68,11 @@ export class UserController {
   })
   @ApiResponse({ status: 400, description: 'Id is not valid' })
   @ApiResponse({ status: 404, description: 'User with this id does not exist' })
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const user = this.userService.findOne(id);
+    const user = await this.userService.findOne(id);
     if (!user) {
       throw new NotFoundException('User with this ID does not exist');
     }
@@ -107,12 +107,12 @@ export class UserController {
   @ApiResponse({ status: 204, description: 'User deleted successfully' })
   @ApiResponse({ status: 400, description: 'Id is not valid' })
   @ApiResponse({ status: 404, description: 'User with this id does not exist' })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
     try {
-      return this.userService.remove(id);
+      return await this.userService.remove(id);
     } catch (err) {
       throw new NotFoundException(err.message);
     }

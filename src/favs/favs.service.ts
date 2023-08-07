@@ -5,12 +5,12 @@ import { DatabaseService } from 'src/database/database.service';
 export class FavsService {
   constructor(private db: DatabaseService) {}
 
-  findAll() {
-    return this.db.findAllFavs();
+  async findAll() {
+    return await this.db.favorites.findMany();
   }
 
-  createTrack(id: string) {
-    const track = this.db.findTrackById(id);
+  async createTrack(id: string) {
+    const track = await this.db.track.findUnique({ where: { id } });
     if (!track) return track;
 
     this.db.addTrackToFavs(track);

@@ -44,8 +44,8 @@ export class AlbumController {
   @ApiBody({
     type: CreateAlbumDto,
   })
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
+    return await this.albumService.create(createAlbumDto);
   }
 
   @Get()
@@ -55,8 +55,8 @@ export class AlbumController {
     description: 'Success',
     type: [Album],
   })
-  findAll() {
-    return this.albumService.findAll();
+  async findAll() {
+    return await this.albumService.findAll();
   }
 
   @Get(':id')
@@ -71,11 +71,11 @@ export class AlbumController {
     status: 404,
     description: 'Album with this id does not exist',
   })
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const album = this.albumService.findOne(id);
+    const album = await this.albumService.findOne(id);
     if (!album) {
       throw new NotFoundException('Album with this ID does not exist');
     }
@@ -98,11 +98,14 @@ export class AlbumController {
   @ApiBody({
     type: PartialType(CreateAlbumDto),
   })
-  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+  ) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const updatedAlbum = this.albumService.update(id, updateAlbumDto);
+    const updatedAlbum = await this.albumService.update(id, updateAlbumDto);
     if (!updatedAlbum) {
       throw new NotFoundException('Album with this ID does not exist');
     }
@@ -118,12 +121,12 @@ export class AlbumController {
     status: 404,
     description: 'Album with this id does not exist',
   })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
     try {
-      return this.albumService.remove(id);
+      return await this.albumService.remove(id);
     } catch (err) {
       throw new NotFoundException(err.message);
     }

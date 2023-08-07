@@ -44,8 +44,8 @@ export class ArtistController {
   @ApiBody({
     type: CreateArtistDto,
   })
-  create(@Body() createArtistDto: CreateArtistDto) {
-    return this.artistService.create(createArtistDto);
+  async create(@Body() createArtistDto: CreateArtistDto) {
+    return await this.artistService.create(createArtistDto);
   }
 
   @Get()
@@ -55,8 +55,8 @@ export class ArtistController {
     description: 'Success',
     type: [Artist],
   })
-  findAll() {
-    return this.artistService.findAll();
+  async findAll() {
+    return await this.artistService.findAll();
   }
 
   @Get(':id')
@@ -71,11 +71,11 @@ export class ArtistController {
     status: 404,
     description: 'Artist with this id does not exist',
   })
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const artist = this.artistService.findOne(id);
+    const artist = await this.artistService.findOne(id);
     if (!artist) {
       throw new NotFoundException('Artist with this ID does not exist');
     }
@@ -98,11 +98,14 @@ export class ArtistController {
   @ApiBody({
     type: PartialType(CreateArtistDto),
   })
-  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateArtistDto: UpdateArtistDto,
+  ) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const updatedArtist = this.artistService.update(id, updateArtistDto);
+    const updatedArtist = await this.artistService.update(id, updateArtistDto);
     if (!updatedArtist) {
       throw new NotFoundException('Artist with this ID does not exist');
     }
@@ -118,12 +121,12 @@ export class ArtistController {
     status: 404,
     description: 'Artist with this id does not exist',
   })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
     try {
-      return this.artistService.remove(id);
+      return await this.artistService.remove(id);
     } catch (err) {
       throw new NotFoundException(err.message);
     }

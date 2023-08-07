@@ -41,7 +41,7 @@ CREATE TABLE "Track" (
 );
 
 -- CreateTable
-CREATE TABLE "Favotites" (
+CREATE TABLE "Favorites" (
     "artists" TEXT[],
     "albums" TEXT[],
     "tracks" TEXT[]
@@ -51,7 +51,7 @@ CREATE TABLE "Favotites" (
 CREATE UNIQUE INDEX "User_login_key" ON "User"("login");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Favotites_artists_albums_tracks_key" ON "Favotites"("artists", "albums", "tracks");
+CREATE UNIQUE INDEX "Favorites_artists_albums_tracks_key" ON "Favorites"("artists", "albums", "tracks");
 
 -- AddForeignKey
 ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "Artist"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -47,7 +47,7 @@ model Track {
   duration Int
 }
 
-model Favotites {
+model Favorites {
   artists String[]
   albums  String[]
   tracks  String[]

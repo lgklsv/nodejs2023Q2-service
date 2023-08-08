@@ -24,10 +24,9 @@ export class UserService {
       },
     });
 
-    console.log(user);
-    return user;
-
-    // delete user.password;
+    const userCopy = JSON.parse(JSON.stringify(user));
+    delete userCopy.password;
+    return userCopy;
   }
 
   async findAll() {

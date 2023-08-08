@@ -13,7 +13,7 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
-  login     String   @unique
+  login     String
   password  String
   version   Int      @default(1)
   createdAt DateTime @default(now())
@@ -21,36 +21,49 @@ model User {
 }
 
 model Artist {
-  id     String  @id @default(uuid())
-  name   String
-  grammy Boolean @default(false)
-  Track  Track[]
-  Album  Album[]
+  id              String            @id @default(uuid())
+  name            String
+  grammy          Boolean           @default(false)
+  Tracks          Track[]
+  Albums          Album[]
+  FavoriteArtists FavoriteArtists[]
 }
 
 model Album {
-  id       String  @id @default(uuid())
-  name     String
-  year     Int
-  artistId String?
-  artist   Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
-  Track    Track[]
+  id             String           @id @default(uuid())
+  name           String
+  year           Int
+  artistId       String?
+  Artist         Artist?          @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  Tracks         Track[]
+  FavoriteAlbums FavoriteAlbums[]
 }
 
 model Track {
-  id       String  @id @default(uuid())
-  name     String
-  artistId String?
-  artist   Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
-  albumId  String?
-  album    Album?  @relation(fields: [albumId], references: [id], onDelete: SetNull)
-  duration Int
+  id             String           @id @default(uuid())
+  name           String
+  artistId       String?
+  Artist         Artist?          @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  albumId        String?
+  Album          Album?           @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  duration       Int
+  FavoriteTracks FavoriteTracks[]
 }
 
-model Favorites {
-  artists String[]
-  albums  String[]
-  tracks  String[]
+model FavoriteArtists {
+  id       Int    @id @default(autoincrement())
+  artistId String @unique
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+}
 
-  @@unique([artists, albums, tracks])
+model FavoriteAlbums {
+  id      Int    @id @default(autoincrement())
+  albumId String @unique
+  album   Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+}
+
+model FavoriteTracks {
+  id      Int    @id @default(autoincrement())
+  trackId String @unique
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
 }

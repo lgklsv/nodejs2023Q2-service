@@ -23,6 +23,7 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { Track } from './entities/track.entity';
+import { Prisma } from '@prisma/client';
 
 @ApiTags('Tracks')
 @Controller('track')
@@ -105,11 +106,16 @@ export class TrackController {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const updatedTrack = await this.trackService.update(id, updateTrackDto);
-    if (!updatedTrack) {
-      throw new NotFoundException('Track with this ID does not exist');
+    try {
+      return await this.trackService.update(id, updateTrackDto);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new NotFoundException('Album with this ID does not exist');
+      }
     }
-    return updatedTrack;
   }
 
   @Delete(':id')

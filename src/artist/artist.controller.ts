@@ -23,6 +23,7 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { Artist } from './entities/artist.entity';
+import { Prisma } from '@prisma/client';
 
 @ApiTags('Artists')
 @Controller('artist')
@@ -105,11 +106,16 @@ export class ArtistController {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const updatedArtist = await this.artistService.update(id, updateArtistDto);
-    if (!updatedArtist) {
-      throw new NotFoundException('Artist with this ID does not exist');
+    try {
+      return await this.artistService.update(id, updateArtistDto);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new NotFoundException('Artist with this ID does not exist');
+      }
     }
-    return updatedArtist;
   }
 
   @Delete(':id')

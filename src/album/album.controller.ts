@@ -23,6 +23,7 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { Album } from './entities/album.entity';
+import { Prisma } from '@prisma/client';
 
 @ApiTags('Albums')
 @Controller('album')
@@ -105,11 +106,16 @@ export class AlbumController {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const updatedAlbum = await this.albumService.update(id, updateAlbumDto);
-    if (!updatedAlbum) {
-      throw new NotFoundException('Album with this ID does not exist');
+    try {
+      return await this.albumService.update(id, updateAlbumDto);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new NotFoundException('Album with this ID does not exist');
+      }
     }
-    return updatedAlbum;
   }
 
   @Delete(':id')

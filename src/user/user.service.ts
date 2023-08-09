@@ -4,6 +4,8 @@ import * as bcrypt from 'bcryptjs';
 
 import { DatabaseService } from 'src/database/database.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { plainToInstance } from 'class-transformer';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -23,14 +25,12 @@ export class UserService {
         version: 1,
       },
     });
-
-    const userCopy = JSON.parse(JSON.stringify(user));
-    delete userCopy.password;
-    return userCopy;
+    return plainToInstance(User, user);
   }
 
   async findAll() {
-    return await this.db.user.findMany();
+    const users = await this.db.user.findMany();
+    return plainToInstance(User, users);
   }
 
   async findOne(id: string) {
@@ -39,9 +39,8 @@ export class UserService {
         id,
       },
     });
-
-    console.log(user);
-    return user;
+    if (!user) return user;
+    return plainToInstance(User, user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -65,14 +64,17 @@ export class UserService {
       +process.env.CRYPT_SALT,
     );
 
-    return this.db.user.update({
+    const updatedUser = this.db.user.update({
       where: {
         id,
       },
       data: {
         password: hash,
+        version: user.version + 1,
       },
     });
+
+    return plainToInstance(User, updatedUser);
   }
 
   remove(id: string) {

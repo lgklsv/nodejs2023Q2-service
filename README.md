@@ -23,6 +23,12 @@ git clone https://github.com/lgklsv/nodejs2023Q2-service.git
 npm install
 ```
 
+## Create .env file
+
+```
+.env file should be at the top level and exactly the same as .env.example
+```
+
 ## Running application
 
 #### Default mode
@@ -100,15 +106,22 @@ For more information, visit: https://code.visualstudio.com/docs/editor/debugging
 git clone https://github.com/lgklsv/nodejs2023Q2-service.git
 ```
 
-## Running application
-
-#### Installing NPM modules
+## Installing NPM modules
 
 ```
 npm install
 ```
 
+## Create .env file
+
+```
+.env file should be at the top level and exactly the same as .env.example
+```
+
+## Running application
+
 #### Pull and build the application inside docker container
+
 ```
 docker-compose up -d --build
 ```

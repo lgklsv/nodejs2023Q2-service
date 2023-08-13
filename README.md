@@ -125,7 +125,7 @@ docker-compose up -d
 docker-compose down
 ```
 
-## To check application image for vulnerabilities
+## To check application image for vulnerabilities (docker should be installed)
 
 ```
 npm run scout

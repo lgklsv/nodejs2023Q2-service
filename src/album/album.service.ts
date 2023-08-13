@@ -8,40 +8,47 @@ import { CreateAlbumDto, UpdateAlbumDto } from './dto';
 export class AlbumService {
   constructor(private db: DatabaseService) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
-    const album: IAlbum = {
-      id: uuidv4(),
-      name: createAlbumDto.name,
-      year: createAlbumDto.year,
-      artistId: createAlbumDto.artistId ? createAlbumDto.artistId : null,
-    };
-    this.db.createAlbum(album);
-    return album;
+  async create(createAlbumDto: CreateAlbumDto) {
+    return await this.db.album.create({
+      data: {
+        id: uuidv4(),
+        name: createAlbumDto.name,
+        year: createAlbumDto.year,
+        artistId: createAlbumDto.artistId ? createAlbumDto.artistId : null,
+      },
+    });
   }
 
-  findAll() {
-    return this.db.findAllAlbums();
+  async findAll() {
+    return await this.db.album.findMany();
   }
 
-  findOne(id: string) {
-    return this.db.findAlbumById(id);
+  async findOne(id: string) {
+    return await this.db.album.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album = this.db.findAlbumById(id);
-    if (!album) return album;
-
-    const updatedAlbum: IAlbum = {
-      ...album,
-      name: updateAlbumDto.name,
-      year: updateAlbumDto.year,
-      artistId: updateAlbumDto.artistId ? updateAlbumDto.artistId : null,
-    };
-
-    return this.db.updateAlbum(id, updatedAlbum);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    return await this.db.album.update({
+      where: {
+        id,
+      },
+      data: {
+        name: updateAlbumDto.name,
+        year: updateAlbumDto.year,
+        artistId: updateAlbumDto.artistId ? updateAlbumDto.artistId : null,
+      },
+    });
   }
 
-  remove(id: string) {
-    return this.db.deleteAlbum(id);
+  async remove(id: string) {
+    return await this.db.album.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

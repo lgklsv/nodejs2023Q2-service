@@ -1,0 +1,44 @@
+version: '3.5'
+
+networks:
+  hls-network:
+    driver: bridge
+
+services:
+  api:
+    container_name: home-library-service
+    image: lgklsv/home-library-service-api:latest
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: .
+    #   target: development
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - hls-network
+    depends_on:
+      - postgres
+    stdin_open: true
+    tty: true
+  postgres:
+    image: postgres:15.3-alpine
+    restart: always
+    volumes:
+      - hls-postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${PORT_DB}:${PORT_DB}
+    networks:
+      - hls-network
+
+volumes:
+  hls-postgres:

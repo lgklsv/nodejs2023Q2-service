@@ -8,38 +8,45 @@ import { CreateArtistDto, UpdateArtistDto } from './dto';
 export class ArtistService {
   constructor(private db: DatabaseService) {}
 
-  create(createArtistDto: CreateArtistDto) {
-    const artist: IArtist = {
-      id: uuidv4(),
-      name: createArtistDto.name,
-      grammy: createArtistDto.grammy,
-    };
-    this.db.createArtist(artist);
-    return artist;
+  async create(createArtistDto: CreateArtistDto) {
+    return await this.db.artist.create({
+      data: {
+        id: uuidv4(),
+        name: createArtistDto.name,
+        grammy: createArtistDto.grammy,
+      },
+    });
   }
 
-  findAll() {
-    return this.db.findAllArtists();
+  async findAll() {
+    return await this.db.artist.findMany();
   }
 
-  findOne(id: string) {
-    return this.db.findArtistById(id);
+  async findOne(id: string) {
+    return this.db.artist.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    const artist = this.db.findArtistById(id);
-    if (!artist) return artist;
-
-    const updatedArtist: IArtist = {
-      ...artist,
-      name: updateArtistDto.name,
-      grammy: updateArtistDto.grammy,
-    };
-
-    return this.db.updateArtist(id, updatedArtist);
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    return await this.db.artist.update({
+      where: {
+        id,
+      },
+      data: {
+        name: updateArtistDto.name,
+        grammy: updateArtistDto.grammy,
+      },
+    });
   }
 
-  remove(id: string) {
-    return this.db.deleteArtist(id);
+  async remove(id: string) {
+    return await this.db.artist.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

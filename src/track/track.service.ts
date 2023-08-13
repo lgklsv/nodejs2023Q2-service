@@ -8,42 +8,49 @@ import { CreateTrackDto, UpdateTrackDto } from './dto';
 export class TrackService {
   constructor(private db: DatabaseService) {}
 
-  create(createTrackDto: CreateTrackDto) {
-    const track: ITrack = {
-      id: uuidv4(),
-      name: createTrackDto.name,
-      artistId: createTrackDto.artistId ? createTrackDto.artistId : null,
-      albumId: createTrackDto.albumId ? createTrackDto.albumId : null,
-      duration: createTrackDto.duration,
-    };
-    this.db.createTrack(track);
-    return track;
+  async create(createTrackDto: CreateTrackDto) {
+    return await this.db.track.create({
+      data: {
+        id: uuidv4(),
+        name: createTrackDto.name,
+        artistId: createTrackDto.artistId ? createTrackDto.artistId : null,
+        albumId: createTrackDto.albumId ? createTrackDto.albumId : null,
+        duration: createTrackDto.duration,
+      },
+    });
   }
 
-  findAll() {
-    return this.db.findAllTracks();
+  async findAll() {
+    return await this.db.track.findMany();
   }
 
-  findOne(id: string) {
-    return this.db.findTrackById(id);
+  async findOne(id: string) {
+    return await this.db.track.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    const track = this.db.findTrackById(id);
-    if (!track) return track;
-
-    const updatedTrack: ITrack = {
-      ...track,
-      name: updateTrackDto.name,
-      artistId: updateTrackDto.artistId ? updateTrackDto.artistId : null,
-      albumId: updateTrackDto.albumId ? updateTrackDto.albumId : null,
-      duration: updateTrackDto.duration,
-    };
-
-    return this.db.updateTrack(id, updatedTrack);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    return await this.db.track.update({
+      where: {
+        id,
+      },
+      data: {
+        name: updateTrackDto.name,
+        artistId: updateTrackDto.artistId ? updateTrackDto.artistId : null,
+        albumId: updateTrackDto.albumId ? updateTrackDto.albumId : null,
+        duration: updateTrackDto.duration,
+      },
+    });
   }
 
-  remove(id: string) {
-    return this.db.deleteTrack(id);
+  async remove(id: string) {
+    return await this.db.track.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

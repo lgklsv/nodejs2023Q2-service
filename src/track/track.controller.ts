@@ -23,6 +23,7 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 import { Track } from './entities/track.entity';
+import { Prisma } from '@prisma/client';
 
 @ApiTags('Tracks')
 @Controller('track')
@@ -44,8 +45,8 @@ export class TrackController {
   @ApiBody({
     type: CreateTrackDto,
   })
-  create(@Body() createTrackDto: CreateTrackDto) {
-    return this.trackService.create(createTrackDto);
+  async create(@Body() createTrackDto: CreateTrackDto) {
+    return await this.trackService.create(createTrackDto);
   }
 
   @Get()
@@ -55,8 +56,8 @@ export class TrackController {
     description: 'Success',
     type: [Track],
   })
-  findAll() {
-    return this.trackService.findAll();
+  async findAll() {
+    return await this.trackService.findAll();
   }
 
   @Get(':id')
@@ -71,11 +72,11 @@ export class TrackController {
     status: 404,
     description: 'Track with this id does not exist',
   })
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const track = this.trackService.findOne(id);
+    const track = await this.trackService.findOne(id);
     if (!track) {
       throw new NotFoundException('Track with this ID does not exist');
     }
@@ -98,15 +99,23 @@ export class TrackController {
   @ApiBody({
     type: PartialType(CreateTrackDto),
   })
-  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
-    const updatedTrack = this.trackService.update(id, updateTrackDto);
-    if (!updatedTrack) {
-      throw new NotFoundException('Track with this ID does not exist');
+    try {
+      return await this.trackService.update(id, updateTrackDto);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new NotFoundException('Album with this ID does not exist');
+      }
     }
-    return updatedTrack;
   }
 
   @Delete(':id')
@@ -118,12 +127,12 @@ export class TrackController {
     status: 404,
     description: 'Track with this id does not exist',
   })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
     try {
-      return this.trackService.remove(id);
+      return await this.trackService.remove(id);
     } catch (err) {
       throw new NotFoundException(err.message);
     }

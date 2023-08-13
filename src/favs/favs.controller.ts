@@ -30,8 +30,8 @@ export class FavsController {
     description: 'Success',
     type: Favorites,
   })
-  findAll() {
-    return this.favsService.findAll();
+  async findAll() {
+    return await this.favsService.findAll();
   }
 
   @Post('track/:id')
@@ -46,12 +46,12 @@ export class FavsController {
     status: 422,
     description: 'Track with this id does not exist',
   })
-  createTrack(@Param('id') id: string) {
+  async createTrack(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
 
-    const track = this.favsService.createTrack(id);
+    const track = await this.favsService.createTrack(id);
 
     if (!track) {
       throw new UnprocessableEntityException(
@@ -71,18 +71,16 @@ export class FavsController {
     status: 404,
     description: 'Track with this id does not exist in favorites',
   })
-  removeTrack(@Param('id') id: string) {
+  async removeTrack(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
 
-    const track = this.favsService.removeTrack(id);
-
-    if (!track) {
+    try {
+      return await this.favsService.removeTrack(id);
+    } catch (err) {
       throw new NotFoundException('Track with this ID does not exist in favs');
     }
-
-    return;
   }
 
   @Post('album/:id')
@@ -97,12 +95,12 @@ export class FavsController {
     status: 422,
     description: 'Album with this id does not exist',
   })
-  createAlbum(@Param('id') id: string) {
+  async createAlbum(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
 
-    const album = this.favsService.createAlbum(id);
+    const album = await this.favsService.createAlbum(id);
 
     if (!album) {
       throw new UnprocessableEntityException(
@@ -122,18 +120,16 @@ export class FavsController {
     status: 404,
     description: 'Album with this id does not exist in favorites',
   })
-  removeAlbum(@Param('id') id: string) {
+  async removeAlbum(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
 
-    const album = this.favsService.removeAlbum(id);
-
-    if (!album) {
+    try {
+      return await this.favsService.removeAlbum(id);
+    } catch (err) {
       throw new NotFoundException('Album with this ID does not exist in favs');
     }
-
-    return;
   }
 
   @Post('artist/:id')
@@ -148,12 +144,12 @@ export class FavsController {
     status: 422,
     description: 'Artist with this id does not exist',
   })
-  createArtist(@Param('id') id: string) {
+  async createArtist(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
 
-    const artist = this.favsService.createArtist(id);
+    const artist = await this.favsService.createArtist(id);
 
     if (!artist) {
       throw new UnprocessableEntityException(
@@ -173,17 +169,15 @@ export class FavsController {
     status: 404,
     description: 'Artist with this id does not exist in favorites',
   })
-  removeArtist(@Param('id') id: string) {
+  async removeArtist(@Param('id') id: string) {
     if (!uuidValidate(id)) {
       throw new BadRequestException('ID should be valid UUID');
     }
 
-    const artist = this.favsService.removeArtist(id);
-
-    if (!artist) {
+    try {
+      return await this.favsService.removeArtist(id);
+    } catch (err) {
       throw new NotFoundException('Artist with this ID does not exist in favs');
     }
-
-    return;
   }
 }

@@ -1,7 +1,3 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
-
 FROM node:18.16-alpine As development
 
 # Create app directory

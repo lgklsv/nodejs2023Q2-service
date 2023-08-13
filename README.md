@@ -86,7 +86,7 @@ Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
 
-# How to run in docker container
+# How to run in Docker container
 
 ## Prerequisites
 
@@ -102,7 +102,7 @@ git clone https://github.com/lgklsv/nodejs2023Q2-service.git
 
 ## Running application
 
-## Installing NPM modules
+#### Installing NPM modules
 
 ```
 npm install
@@ -113,7 +113,7 @@ npm install
 docker-compose up -d --build
 ```
 
-#### If you've already done builds just start docker container with
+#### If you've already done build process just start docker container with
 
 ```
 docker-compose up -d
@@ -131,6 +131,6 @@ docker-compose down
 npm run scout
 ```
 
-## Application image on docker hub
+## Application image on Docker Hub
 
 https://hub.docker.com/layers/lgklsv/home-library-service-api/latest/images/sha256:1f1786c5b591c3b5186bfd0b09be4fe2b20f114d81289d74ebb82e7bb1787cc2

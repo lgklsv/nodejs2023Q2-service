@@ -6,25 +6,23 @@ export class FavsService {
   constructor(private db: DatabaseService) {}
 
   async findAll() {
-    const [artists, albums, tracks] = await Promise.all([
-      this.db.favoriteArtists.findMany({
-        include: {
-          artist: true,
-        },
-      }),
-      this.db.favoriteAlbums.findMany({
-        include: {
-          album: true,
-        },
-      }),
-      this.db.favoriteTracks.findMany({
-        include: {
-          track: true,
-        },
-      }),
-    ]);
+    const artists = await this.db.favoriteArtists.findMany({
+      include: {
+        artist: true,
+      },
+    });
 
-    console.log(artists, albums, tracks);
+    const albums = await this.db.favoriteAlbums.findMany({
+      include: {
+        album: true,
+      },
+    });
+
+    const tracks = await this.db.favoriteTracks.findMany({
+      include: {
+        track: true,
+      },
+    });
 
     return {
       artists: artists.map((item) => item.artist),

@@ -1,4 +1,5 @@
 import { ConsoleLogger, Injectable, Scope } from '@nestjs/common';
+import { writeLogsToFile } from 'src/utils/writeLogsToFile';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class HomeLibraryServiceLogger extends ConsoleLogger {
@@ -27,5 +28,6 @@ export class HomeLibraryServiceLogger extends ConsoleLogger {
   private writeToFile(message: string) {
     // Implement the logic to write logs to a file here.
     console.log(message);
+    writeLogsToFile(message);
   }
 }

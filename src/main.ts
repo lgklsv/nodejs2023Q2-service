@@ -17,5 +17,13 @@ async function bootstrap() {
 
   app.useLogger(new HomeLibraryServiceLogger());
   await app.listen(process.env.PORT || 4001);
+
+  process.on('uncaughtException', (err) => {
+    console.log(err);
+  });
+
+  process.on('unhandledRejection', (err) => {
+    console.log(err);
+  });
 }
 bootstrap();

@@ -6,12 +6,10 @@ import { DatabaseService } from 'src/database/database.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { plainToInstance } from 'class-transformer';
 import { User } from './entities/user.entity';
-import { HomeLibraryServiceLogger } from 'src/logger/logger.service';
 
 @Injectable()
 export class UserService {
   constructor(private db: DatabaseService) {}
-  private logger = new HomeLibraryServiceLogger(UserService.name);
 
   async create(createUserDto: CreateUserDto) {
     const hash = await bcrypt.hash(
@@ -31,7 +29,6 @@ export class UserService {
   }
 
   async findAll() {
-    this.logger.log('hiiiiiiii');
     const users = await this.db.user.findMany();
     return plainToInstance(User, users);
   }

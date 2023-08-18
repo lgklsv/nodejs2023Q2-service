@@ -6,12 +6,16 @@ import {
   statSync,
 } from 'fs';
 import * as path from 'path';
+import { LoggerLevels } from 'src/shared/const';
 
-export const writeLogsToFile = (message: string) => {
+export const writeLogsToFile = (
+  level: keyof typeof LoggerLevels,
+  message: string,
+) => {
   const logsDir = path.join(process.cwd(), 'logs');
   // const errorsDir = path.join(process.cwd(), 'errors');
 
-  const data = `{"level": "1", "message": "${message}", "timestamp": "${new Date()}"}\r\n`;
+  const data = `{"level": "${level}", "message": "${message}", "timestamp": "${new Date()}"}\r\n`;
 
   if (!existsSync(logsDir)) {
     mkdirSync(logsDir);

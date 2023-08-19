@@ -13,28 +13,35 @@ export const writeLogsToFile = (
   message: string,
 ) => {
   const logsDir = path.join(process.cwd(), 'logs');
-  // const errorsDir = path.join(process.cwd(), 'errors');
+  const errorsDir = path.join(process.cwd(), 'errors');
 
   const data = `{"level": "${level}", "message": "${message}", "timestamp": "[${new Date().toISOString()}]"}\r\n`;
 
-  if (!existsSync(logsDir)) {
-    mkdirSync(logsDir);
+  let dir = logsDir;
+  let filePrefix = 'logs';
+  if (level === 'error') {
+    dir = errorsDir;
+    filePrefix = 'errors';
   }
 
-  const files = readdirSync(logsDir);
+  if (!existsSync(dir)) {
+    mkdirSync(dir);
+  }
+
+  const files = readdirSync(dir);
   const lastFile = files[files.length - 1];
   let lastFileSize = undefined;
   if (lastFile) {
-    lastFileSize = statSync(path.join(logsDir, lastFile)).size;
+    lastFileSize = statSync(path.join(dir, lastFile)).size;
   }
 
   if (lastFileSize && lastFileSize < +process.env.LOGGER_FILE_SIZE) {
-    appendFileSync(path.join(logsDir, lastFile || 'logs-0.log'), data, {
+    appendFileSync(path.join(dir, lastFile || `${filePrefix}-0.log`), data, {
       encoding: 'utf8',
       mode: 438,
     });
   } else {
-    appendFileSync(path.join(logsDir, `logs-${files.length}.log`), data, {
+    appendFileSync(path.join(dir, `${filePrefix}-${files.length}.log`), data, {
       encoding: 'utf8',
       mode: 438,
     });

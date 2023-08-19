@@ -7,6 +7,8 @@ import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
 import { FavsModule } from './favs/favs.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './logger/exception.filter';
 
 @Module({
   imports: [
@@ -19,6 +21,12 @@ import { LoggerMiddleware } from './logger/logger.middleware';
     FavsModule,
   ],
   exports: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

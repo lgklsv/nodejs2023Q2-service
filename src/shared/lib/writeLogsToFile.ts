@@ -15,7 +15,7 @@ export const writeLogsToFile = (
   const logsDir = path.join(process.cwd(), 'logs');
   // const errorsDir = path.join(process.cwd(), 'errors');
 
-  const data = `{"level": "${level}", "message": "${message}", "timestamp": "${new Date()}"}\r\n`;
+  const data = `{"level": "${level}", "message": "${message}", "timestamp": "[${new Date().toISOString()}]"}\r\n`;
 
   if (!existsSync(logsDir)) {
     mkdirSync(logsDir);

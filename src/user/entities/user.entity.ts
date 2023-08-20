@@ -33,4 +33,8 @@ export class User implements IUser {
     prop.value instanceof Date ? prop.value.getTime() : prop.value,
   )
   updatedAt: number;
+
+  @ApiProperty()
+  @Exclude()
+  hashedRt: string;
 }

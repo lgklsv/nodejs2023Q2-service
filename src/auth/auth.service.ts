@@ -10,6 +10,44 @@ import { DatabaseService } from 'src/database/database.service';
 export class AuthService {
   constructor(private db: DatabaseService, private jwtService: JwtService) {}
 
+  async signup(userDto: CreateUserDto): Promise<Tokens> {
+    const hash = await this.hashData(userDto.password);
+
+    const user = await this.db.user.create({
+      data: {
+        id: uuidv4(),
+        login: userDto.login,
+        password: hash,
+        version: 1,
+      },
+    });
+
+    const tokens = await this.getTokens(user.id, user.login);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
+  }
+
+  async login(userDto: CreateUserDto) {
+    console.log('login');
+  }
+
+  async refresh(token: string) {
+    console.log('refresh');
+  }
+
+  async updateRtHash(userId: string, rt: string) {
+    const hash = await this.hashData(rt);
+    await this.db.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        hashedRt: hash,
+      },
+    });
+  }
+
+  // Utility functions
   async hashData(data: string) {
     return bcrypt.hash(data, +process.env.CRYPT_SALT);
   }
@@ -36,42 +74,5 @@ export class AuthService {
       access_token: at,
       refresh_token: rt,
     };
-  }
-
-  async updateRtHash(userId: string, rt: string) {
-    const hash = await this.hashData(rt);
-    await this.db.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        hashedRt: hash,
-      },
-    });
-  }
-
-  async signup(userDto: CreateUserDto): Promise<Tokens> {
-    const hash = await this.hashData(userDto.password);
-
-    const user = await this.db.user.create({
-      data: {
-        id: uuidv4(),
-        login: userDto.login,
-        password: hash,
-        version: 1,
-      },
-    });
-
-    const tokens = await this.getTokens(user.id, user.login);
-    await this.updateRtHash(user.id, tokens.refresh_token);
-    return tokens;
-  }
-
-  async login(userDto: CreateUserDto) {
-    console.log('login');
-  }
-
-  async refresh(token: string) {
-    console.log('refresh');
   }
 }

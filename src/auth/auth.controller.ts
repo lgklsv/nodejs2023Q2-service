@@ -12,19 +12,25 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto';
 
 import { RtGuard } from 'src/shared/guards';
-import { GetCurrentUser, GetCurrentUserId } from 'src/shared/decorators';
+import {
+  GetCurrentUser,
+  GetCurrentUserId,
+  Public,
+} from 'src/shared/decorators';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
-  signup(@Body() userDto: CreateUserDto): Promise<Tokens> {
+  signup(@Body() userDto: CreateUserDto) {
     return this.authService.signup(userDto);
   }
 
+  @Public()
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('login')

@@ -10,12 +10,14 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto';
 import { DatabaseService } from 'src/database/database.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { User } from 'src/user/entities/user.entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
   constructor(private db: DatabaseService, private jwtService: JwtService) {}
 
-  async signup(userDto: CreateUserDto): Promise<Tokens> {
+  async signup(userDto: CreateUserDto) {
     const hash = await this.hashData(userDto.password);
 
     try {
@@ -28,8 +30,8 @@ export class AuthService {
         },
       });
       const tokens = await this.getTokens(user.id, user.login);
-      await this.updateRtHash(user.id, tokens.refresh_token);
-      return tokens;
+      await this.updateRtHash(user.id, tokens.refreshToken);
+      return plainToInstance(User, user);
     } catch (err) {
       if (
         err instanceof PrismaClientKnownRequestError &&
@@ -41,7 +43,7 @@ export class AuthService {
   }
 
   async login(userDto: CreateUserDto): Promise<Tokens> {
-    const user = await this.db.user.findUnique({
+    const user = await this.db.user.findFirst({
       where: {
         login: userDto.login,
       },
@@ -57,7 +59,7 @@ export class AuthService {
     if (!passwordMatches) throw new ForbiddenException('Access Denied!');
 
     const tokens = await this.getTokens(user.id, user.login);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+    await this.updateRtHash(user.id, tokens.refreshToken);
     return tokens;
   }
 
@@ -75,7 +77,7 @@ export class AuthService {
     if (!rtMatches) throw new ForbiddenException('Access Denied!');
 
     const tokens = await this.getTokens(user.id, user.login);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+    await this.updateRtHash(user.id, tokens.refreshToken);
     return tokens;
   }
 
@@ -99,14 +101,14 @@ export class AuthService {
   async getTokens(userId: string, login: string): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
-        { sub: userId, login },
+        { id: userId, login },
         {
           secret: process.env.JWT_SECRET_KEY,
           expiresIn: process.env.TOKEN_EXPIRE_TIME,
         },
       ),
       this.jwtService.signAsync(
-        { sub: userId, login },
+        { id: userId, login },
         {
           secret: process.env.JWT_SECRET_REFRESH_KEY,
           expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
@@ -115,8 +117,8 @@ export class AuthService {
     ]);
 
     return {
-      access_token: at,
-      refresh_token: rt,
+      accessToken: at,
+      refreshToken: rt,
     };
   }
 }

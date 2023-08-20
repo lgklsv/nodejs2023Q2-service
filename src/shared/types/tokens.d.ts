@@ -1,9 +1,9 @@
 type Tokens = {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 type JwtPayload = {
-  sub: string;
+  id: string;
   login: string;
 };

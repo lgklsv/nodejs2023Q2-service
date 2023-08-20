@@ -4,19 +4,12 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto';
-
-import { RtGuard } from 'src/shared/guards';
-import {
-  GetCurrentUser,
-  GetCurrentUserId,
-  Public,
-} from 'src/shared/decorators';
+import { Public } from 'src/shared/decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -38,13 +31,10 @@ export class AuthController {
     return this.authService.login(userDto);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(RtGuard)
   @Post('refresh')
-  refresh(
-    @GetCurrentUserId() userId: string,
-    @GetCurrentUser('refreshToken') refreshToken: string,
-  ) {
-    return this.authService.refresh(userId, refreshToken);
+  refresh(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
   }
 }

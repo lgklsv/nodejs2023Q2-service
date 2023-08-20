@@ -4,6 +4,6 @@ type Tokens = {
 };
 
 type JwtPayload = {
-  id: string;
+  sub: string;
   login: string;
 };

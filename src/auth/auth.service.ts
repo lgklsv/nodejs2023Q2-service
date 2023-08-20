@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcryptjs';
@@ -43,7 +44,7 @@ export class AuthService {
   }
 
   async login(userDto: CreateUserDto): Promise<Tokens> {
-    const user = await this.db.user.findFirst({
+    const user = await this.db.user.findUnique({
       where: {
         login: userDto.login,
       },
@@ -63,10 +64,21 @@ export class AuthService {
     return tokens;
   }
 
-  async refresh(userId: string, rt: string) {
+  async refresh(rt: string) {
+    if (!rt) {
+      throw new UnauthorizedException('No refresh token provided in body');
+    }
+
+    const isTokenValid = await this.verifyRt(rt);
+
+    if (!isTokenValid)
+      throw new ForbiddenException('Refresh token is invalid or expired');
+
+    const { sub } = this.jwtService.decode(rt);
+
     const user = await this.db.user.findUnique({
       where: {
-        id: userId,
+        id: sub,
       },
     });
 
@@ -101,14 +113,14 @@ export class AuthService {
   async getTokens(userId: string, login: string): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
-        { id: userId, login },
+        { sub: userId, login },
         {
           secret: process.env.JWT_SECRET_KEY,
           expiresIn: process.env.TOKEN_EXPIRE_TIME,
         },
       ),
       this.jwtService.signAsync(
-        { id: userId, login },
+        { sub: userId, login },
         {
           secret: process.env.JWT_SECRET_REFRESH_KEY,
           expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
@@ -120,5 +132,17 @@ export class AuthService {
       accessToken: at,
       refreshToken: rt,
     };
+  }
+
+  async verifyRt(rt: string): Promise<boolean> {
+    try {
+      const isValid = await this.jwtService.verifyAsync(rt, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      });
+
+      return isValid;
+    } catch (error) {
+      return false;
+    }
   }
 }

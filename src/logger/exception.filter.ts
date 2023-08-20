@@ -32,6 +32,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      message:
+        exception instanceof HttpException
+          ? exception.message
+          : 'Internal Server Error',
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, statusCode);
@@ -43,7 +47,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       this.logger.error(message, exception.stack, exception.name);
     } else if (exception instanceof Error) {
-      this.logger.error(message, exception.stack, 'INTERNAL SERVER ERROR');
+      this.logger.error(message, exception.stack, 'Internal Server Error');
+    } else {
+      this.logger.error(message, 'no-trace', 'Internal Server Error');
     }
   }
 }

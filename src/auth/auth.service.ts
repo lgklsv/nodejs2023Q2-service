@@ -61,8 +61,22 @@ export class AuthService {
     return tokens;
   }
 
-  async refresh(token: string) {
-    console.log('refresh');
+  async refresh(userId: string, rt: string) {
+    const user = await this.db.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) throw new ForbiddenException('Access Denied!');
+
+    const rtMatches = await bcrypt.compare(rt, user.hashedRt);
+
+    if (!rtMatches) throw new ForbiddenException('Access Denied!');
+
+    const tokens = await this.getTokens(user.id, user.login);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
   }
 
   async updateRtHash(userId: string, rt: string) {

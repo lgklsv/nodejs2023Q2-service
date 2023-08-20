@@ -4,15 +4,15 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+
+import { RtGuard } from 'src/shared/guards';
+import { GetCurrentUser, GetCurrentUserId } from 'src/shared/decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -33,10 +33,12 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('jwt-refresh'))
+  @UseGuards(RtGuard)
   @Post('refresh')
-  refresh(@Req() req: Request) {
-    const user = req.user;
-    return this.authService.refresh(user['sub'], user['refreshToken']);
+  refresh(
+    @GetCurrentUserId() userId: string,
+    @GetCurrentUser('refreshToken') refreshToken: string,
+  ) {
+    return this.authService.refresh(userId, refreshToken);
   }
 }

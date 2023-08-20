@@ -9,6 +9,7 @@ import { FavsModule } from './favs/favs.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './logger/exception.filter';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AllExceptionsFilter } from './logger/exception.filter';
     ArtistModule,
     AlbumModule,
     FavsModule,
+    AuthModule,
   ],
   exports: [],
   providers: [

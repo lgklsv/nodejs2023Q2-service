@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
@@ -10,7 +9,6 @@ import { JwtService } from '@nestjs/jwt';
 
 import { CreateUserDto } from 'src/user/dto';
 import { DatabaseService } from 'src/database/database.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from 'src/user/entities/user.entity';
 import { plainToInstance } from 'class-transformer';
 
@@ -21,30 +19,21 @@ export class AuthService {
   async signup(userDto: CreateUserDto) {
     const hash = await this.hashData(userDto.password);
 
-    try {
-      const user = await this.db.user.create({
-        data: {
-          id: uuidv4(),
-          login: userDto.login,
-          password: hash,
-          version: 1,
-        },
-      });
-      const tokens = await this.getTokens(user.id, user.login);
-      await this.updateRtHash(user.id, tokens.refreshToken);
-      return plainToInstance(User, user);
-    } catch (err) {
-      if (
-        err instanceof PrismaClientKnownRequestError &&
-        err.code === 'P2002'
-      ) {
-        throw new BadRequestException('User with this login already exists');
-      }
-    }
+    const user = await this.db.user.create({
+      data: {
+        id: uuidv4(),
+        login: userDto.login,
+        password: hash,
+        version: 1,
+      },
+    });
+    const tokens = await this.getTokens(user.id, user.login);
+    await this.updateRtHash(user.id, tokens.refreshToken);
+    return plainToInstance(User, user);
   }
 
   async login(userDto: CreateUserDto): Promise<Tokens> {
-    const user = await this.db.user.findUnique({
+    const user = await this.db.user.findFirst({
       where: {
         login: userDto.login,
       },
